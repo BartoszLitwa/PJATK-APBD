@@ -1,4 +1,6 @@
 ﻿using System;
+using CSharpFunctionalExtensions;
+using LegacyApp.Exceptions;
 
 namespace LegacyApp
 {
@@ -10,5 +12,15 @@ namespace LegacyApp
         public string LastName { get; internal set; }
         public bool HasCreditLimit { get; internal set; }
         public int CreditLimit { get; internal set; }
+        
+        private User() { }
+
+        public static Result<User, UserException> Create()
+        {
+            return new User()
+            {
+                
+            }
+        }
     }
 }
