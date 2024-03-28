@@ -1,6 +1,6 @@
 ﻿namespace LegacyApp.Exceptions;
 
-public class UserCouldNotBeCreatedException : UserException
+public class UserCouldNotBeCreatedException(string message) : UserException(message)
 {
     
 }

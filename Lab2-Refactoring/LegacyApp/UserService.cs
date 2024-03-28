@@ -1,89 +1,61 @@
 ﻿using System;
+using CSharpFunctionalExtensions;
 using LegacyApp.Enums;
 
 namespace LegacyApp
 {
-    public class UserService
+    public class UserService(
+        IClientRepository _clientRepository,
+        IUserCreditService _userCreditService,
+        IUserRepository _userRepository)
     {
-        private readonly IClientRepository _clientRepository;
-        private readonly IUserCreditService _userCreditService;
-
-        public UserService() : this(new ClientRepository(), new UserCreditService()) { }
-        
-        public UserService(IClientRepository clientRepository, IUserCreditService userCreditService)
-        {
-            _clientRepository = clientRepository;
-            _userCreditService = userCreditService;
-        }
+        // This constructor is for keeping the legacy code working
+        public UserService() : this(new ClientRepository(), new UserCreditService(), new UserDataAccessRepositoryAdapter()) { }
 
         public bool AddUser(string firstName, string lastName, string email, DateTime dateOfBirth, int clientId)
         {
-            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
-            {
+            var (_, isFailure, user) = User.Create(firstName, lastName, email, dateOfBirth);
+            if (isFailure)
                 return false;
-            }
-
-            if (!email.Contains("@") && !email.Contains("."))
-            {
-                return false;
-            }
-
-            var now = DateTime.Now;
-            var age = now.Year - dateOfBirth.Year;
-            if (now.Month < dateOfBirth.Month || (now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)) age--;
-
-            if (age < 21)
-            {
-                return false;
-            }
 
             var client = _clientRepository.GetById(clientId);
+            user.SetClient(client);
 
-            var user = new User
-            {
-                Client = client,
-                DateOfBirth = dateOfBirth,
-                Email = email,
-                FirstName = firstName,
-                LastName = lastName
-            };
-
-            switch (client.Type)
-            {
-                case ClientType.VeryImportantClient:
-                    user.HasCreditLimit = false;
-                    break;
-                case ClientType.ImportantClient:
-                {
-                    using (var userCreditService = new UserCreditService())
-                    {
-                        int creditLimit = userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
-                        creditLimit = creditLimit * 2;
-                        user.CreditLimit = creditLimit;
-                    }
-
-                    break;
-                }
-                default:
-                {
-                    user.HasCreditLimit = true;
-                    using (var userCreditService = new UserCreditService())
-                    {
-                        int creditLimit = userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
-                        user.CreditLimit = creditLimit;
-                    }
-
-                    break;
-                }
-            }
+            SetCreditLimit(user, client);
 
             if (user.HasCreditLimit && user.CreditLimit < 500)
             {
                 return false;
             }
 
-            UserDataAccess.AddUser(user);
+            _userRepository.AddUser(user);
             return true;
+        }
+        
+        private void SetCreditLimit(User user, Client client)
+        {
+            if (client is null)
+                return;
+            
+            switch (client.Type)
+            {
+                case ClientType.VeryImportantClient:
+                    user.HasCreditLimit = false;
+                    break;
+                case ClientType.ImportantClient:
+                    user.CreditLimit = CalculateCreditLimit(user) * 2;
+                    break;
+                case ClientType.NormalClient:
+                default:
+                    user.HasCreditLimit = true;
+                    user.CreditLimit = CalculateCreditLimit(user);
+                    break;
+            }
+        }
+
+        private int CalculateCreditLimit(User user)
+        {
+            return _userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
         }
     }
 }

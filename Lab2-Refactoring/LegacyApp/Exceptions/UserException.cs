@@ -2,7 +2,4 @@
 
 namespace LegacyApp.Exceptions;
 
-public abstract class UserException : Exception
-{
-    
-}
+public abstract class UserException(string message) : Exception(message);

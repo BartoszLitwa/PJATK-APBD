@@ -2,7 +2,7 @@
 
 namespace LegacyApp;
 
-public interface IUserCreditService
+public interface IUserCreditService : IDisposable
 {
     int GetCreditLimit(string lastName, DateTime dateOfBirth);
 }
