@@ -49,6 +49,11 @@ namespace LegacyApp
             Client = client;
         }
         
+        public bool IsCreditLimitBelow(int limit)
+        {
+            return HasCreditLimit && CreditLimit < limit;
+        }
+        
         public int GetAge()
         {
             var now = DateTime.Now;

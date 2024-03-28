@@ -23,10 +23,8 @@ namespace LegacyApp
 
             SetCreditLimit(user, client);
 
-            if (user.HasCreditLimit && user.CreditLimit < 500)
-            {
+            if (user.IsCreditLimitBelow(500))
                 return false;
-            }
 
             _userRepository.AddUser(user);
             return true;
