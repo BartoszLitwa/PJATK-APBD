@@ -7,15 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Carter" Version="8.0.0" />
         <PackageReference Include="CSharpFunctionalExtensions" Version="2.41.0" />
         <PackageReference Include="MediatR" Version="12.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Animals\Commands\" />
+      <Folder Include="Animals\Exceptions\" />
+      <Folder Include="Common\SQL\" />
     </ItemGroup>
 
 </Project>

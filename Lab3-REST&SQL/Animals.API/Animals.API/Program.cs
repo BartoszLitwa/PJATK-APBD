@@ -1,3 +1,4 @@
+using Animals.API.Common;
 using Animals.API.Configuration;
 using Carter;
 
@@ -8,6 +9,7 @@ builder.Services.Configure<AppConfig>(builder.Configuration.GetSection(AppConfig
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddCarter();
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<Program>());
 
