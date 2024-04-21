@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Animals.API.Common;
 using Animals.API.Configuration;
 using Carter;

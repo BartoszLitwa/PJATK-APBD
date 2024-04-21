@@ -17,9 +17,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Animals\Commands\" />
       <Folder Include="Animals\Exceptions\" />
       <Folder Include="Common\SQL\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="appsettings.Development.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

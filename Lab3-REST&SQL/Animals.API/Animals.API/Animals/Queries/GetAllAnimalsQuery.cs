@@ -1,26 +1,34 @@
-using System.ComponentModel.DataAnnotations;
 using Animals.API.Animals.Models;
 using Animals.API.Common.Exceptions;
+using Animals.API.Configuration;
 using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
 
 namespace Animals.API.Animals.Queries;
 
-public record GetAllAnimalsQuery(
-    [AllowedValues("name", "description", "category", "area")] string OrderBy) : IRequest<Result<IEnumerable<Animal>, ValidationFailed>>;
+public record GetAllAnimalsQuery(string? OrderBy) : IRequest<Result<IEnumerable<Animal>, ValidationFailed>>;
 
-public class GetAllAnimalsHandler()
+public class GetAllAnimalsHandler(IOptions<AppConfig> config)
     : IRequestHandler<GetAllAnimalsQuery, Result<IEnumerable<Animal>, ValidationFailed>>
 {
+    private readonly AppConfig _config = config.Value;
+    private readonly string[] _allowedOrderByValues = ["name", "description", "category", "area"];
+
     public async Task<Result<IEnumerable<Animal>, ValidationFailed>> Handle(GetAllAnimalsQuery request, CancellationToken cancellationToken)
     {
-        await using var con = new SqlConnection();
+        if(request.OrderBy is not null && !_allowedOrderByValues.Contains(request.OrderBy))
+            return Result.Failure<IEnumerable<Animal>, ValidationFailed>(new ValidationFailed("Invalid OrderBy value"));
+        
+        await using var con = new SqlConnection(_config.SQLServerConnectionString);
         await con.OpenAsync(cancellationToken);
 
-        var sqlCmd = "SELECT * FROM [dbo].[Animals] ORDER BY @OrderBy ASC";
+        var orderBy = (request.OrderBy ?? "name");
+        orderBy = char.ToUpper(orderBy[0]) + orderBy[1..];
+        // SQL injection vulnerability - SQL Parameter does not allow it
+        var sqlCmd = $"SELECT * FROM [dbo].[Animals] ORDER BY {orderBy} ASC";
         await using var cmd = new SqlCommand(sqlCmd, con);
-        cmd.Parameters.Add(new SqlParameter("@OrderBy", request.OrderBy ?? "name"));
 
         var animals = new List<Animal>();
         var dr = await cmd.ExecuteReaderAsync(cancellationToken);
@@ -28,7 +36,7 @@ public class GetAllAnimalsHandler()
         {
             animals.Add(new Animal
             {
-                Id = dr.GetInt32(dr.GetOrdinal("Id")),
+                IdAnimal = dr.GetInt32(dr.GetOrdinal("IdAnimal")),
                 Name = dr.GetString(dr.GetOrdinal("Name")),
                 Description = dr.IsDBNull(dr.GetOrdinal("Description")) ? null : dr.GetString(dr.GetOrdinal("Description")),
                 Category = dr.GetString(dr.GetOrdinal("Category")),
