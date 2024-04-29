@@ -1,4 +1,8 @@
+using Warehouse.API;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<AppConfig>(builder.Configuration.GetSection(AppConfig.Section));
 
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddControllers();
