@@ -18,8 +18,8 @@ public class WarehouseController(ILogger<WarehouseController> logger, ISender se
     {
         var result = await _sender.Send(new AddProductToWarehouseInCodeCommand
         {
-            ProductId = request.IdProduct,
-            WarehouseId = request.IdWarehouse,
+            IdProduct = request.IdProduct,
+            IdWarehouse = request.IdWarehouse,
             Amount = request.Amount,
             CreatedAt = request.CreatedAt
         });
@@ -31,8 +31,8 @@ public class WarehouseController(ILogger<WarehouseController> logger, ISender se
     {
         var result = await _sender.Send(new AddProductToWarehouseInSQLProcedureCommand
         {
-            ProductId = request.IdProduct,
-            WarehouseId = request.IdWarehouse,
+            IdProduct = request.IdProduct,
+            IdWarehouse = request.IdWarehouse,
             Amount = request.Amount,
             CreatedAt = request.CreatedAt
         });
