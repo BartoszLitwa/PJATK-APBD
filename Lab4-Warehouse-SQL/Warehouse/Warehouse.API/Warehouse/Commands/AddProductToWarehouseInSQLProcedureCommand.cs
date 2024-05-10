@@ -35,7 +35,7 @@ public class AddProductToWarehouseInSQLProcedureHandler(IOptions<AppConfig> opti
             command.Parameters.AddWithValue("@Amount", request.Amount);
             command.Parameters.AddWithValue("@CreatedAt", request.CreatedAt);
 
-            var result = (int)await command.ExecuteScalarAsync(cancellationToken);
+            var result = (int)(decimal)await command.ExecuteScalarAsync(cancellationToken);
 
             return result >= 0 
                 ? Result.Success(result) 

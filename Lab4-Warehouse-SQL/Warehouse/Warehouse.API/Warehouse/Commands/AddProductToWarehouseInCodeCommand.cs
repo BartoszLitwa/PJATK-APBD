@@ -54,33 +54,27 @@ public class AddProductToWarehouseInCodeHandler(IOptions<AppConfig> options) : I
                 return Result.Failure<int>("No matching order found in Order table");
             
             await orderReader.ReadAsync(cancellationToken);
-            var orderId = orderReader.GetInt32(0);
+            var idOrder = orderReader.GetInt32(0);
             var productPrice = orderReader.GetDecimal(1);
             await orderReader.CloseAsync();
-            
-            var productWarehouseCmd = new SqlCommand("SELECT COUNT(*) FROM [Product_Warehouse] " +
-                                                     "WHERE OrderId = @OrderId", connection, transaction);
-            productWarehouseCmd.Parameters.AddWithValue("@OrderId", request.IdProduct);
-            await using var productWarehouseReader = await orderCheckCmd.ExecuteReaderAsync(cancellationToken);
-            if (!productWarehouseReader.HasRows)
-                return Result.Failure<int>("No matching order found in ProductWarehouse table");
 
+            var date = DateTime.UtcNow;
             // Update the order as fulfilled
-            var updateOrderCmd = new SqlCommand("UPDATE [Product_Warehouse] SET FulfilledAt = @FulfilledAt WHERE ID = @OrderId", connection, transaction);
-            updateOrderCmd.Parameters.AddWithValue("@FulfilledAt", DateTime.Now);
-            updateOrderCmd.Parameters.AddWithValue("@OrderId", orderId);
+            var updateOrderCmd = new SqlCommand("UPDATE [Order] SET FulfilledAt = @FulfilledAt WHERE IdOrder = @IdOrder", connection, transaction);
+            updateOrderCmd.Parameters.AddWithValue("@FulfilledAt", date);
+            updateOrderCmd.Parameters.AddWithValue("@IdOrder", idOrder);
             await updateOrderCmd.ExecuteNonQueryAsync(cancellationToken);
 
             // Insert the record into Product_Warehouse
             var insertProductWarehouseCmd = new SqlCommand("INSERT INTO Product_Warehouse " +
-                                                           "(ProductId, WarehouseId, OrderId, Amount, Price, CreatedAt) OUTPUT INSERTED.ID " +
-                                                           "VALUES (@ProductId, @WarehouseId, @OrderId, @Amount, @Price, @CreatedAt)", connection, transaction);
-            insertProductWarehouseCmd.Parameters.AddWithValue("@ProductId", request.IdProduct);
-            insertProductWarehouseCmd.Parameters.AddWithValue("@WarehouseId", request.IdWarehouse);
-            insertProductWarehouseCmd.Parameters.AddWithValue("@OrderId", orderId);
+                                                           "(IdProduct, IdWarehouse, IdOrder, Amount, Price, CreatedAt) OUTPUT INSERTED.IdProductWarehouse " +
+                                                           "VALUES (@IdProduct, @IdWarehouse, @IdOrder, @Amount, @Price, @CreatedAt)", connection, transaction);
+            insertProductWarehouseCmd.Parameters.AddWithValue("@IdProduct", request.IdProduct);
+            insertProductWarehouseCmd.Parameters.AddWithValue("@IdWarehouse", request.IdWarehouse);
+            insertProductWarehouseCmd.Parameters.AddWithValue("@IdOrder", idOrder);
             insertProductWarehouseCmd.Parameters.AddWithValue("@Amount", request.Amount);
             insertProductWarehouseCmd.Parameters.AddWithValue("@Price", productPrice * request.Amount);
-            insertProductWarehouseCmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+            insertProductWarehouseCmd.Parameters.AddWithValue("@CreatedAt", date);
 
             var insertedId = (int)await insertProductWarehouseCmd.ExecuteScalarAsync(cancellationToken);
 
