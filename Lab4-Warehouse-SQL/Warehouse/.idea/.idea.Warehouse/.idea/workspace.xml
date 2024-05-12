@@ -8,12 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49a6bb9c-8c9c-407c-891e-f136cc56b846" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Warehouse/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Warehouse/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Warehouse.API/Warehouse/Commands/AddProductToWarehouseInCodeCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Warehouse.API/Warehouse/Commands/AddProductToWarehouseInCodeCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Warehouse.API/Warehouse/Commands/AddProductToWarehouseInSQLProcedureCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Warehouse.API/Warehouse/Commands/AddProductToWarehouseInSQLProcedureCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Warehouse.API/Warehouse/SQL/AddProductToWarehouse.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Warehouse.API/Warehouse/SQL/AddProductToWarehouse.sql" afterDir="false" />
-    </list>
+    <list default="true" id="49a6bb9c-8c9c-407c-891e-f136cc56b846" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -111,7 +106,7 @@
       <updated>1714307828925</updated>
       <workItem from="1714307829594" duration="2827000" />
       <workItem from="1715293747351" duration="502000" />
-      <workItem from="1715378656733" duration="1662000" />
+      <workItem from="1715378656733" duration="1900000" />
     </task>
     <servers />
   </component>
