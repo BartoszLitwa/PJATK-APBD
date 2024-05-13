@@ -1,9 +1,12 @@
+using Carter;
 using Microsoft.EntityFrameworkCore;
 using Trips.API;
 using Trips.API.Data;
+using Trips.API.Data.AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(AppSettings.SectionName));
 var appSettings = builder.Configuration.GetSection(AppSettings.SectionName).Get<AppSettings>();
 
 builder.Services.AddDbContext<TripsDbContext>(options =>
@@ -11,7 +14,10 @@ builder.Services.AddDbContext<TripsDbContext>(options =>
     options.UseSqlServer(appSettings!.SQLConnectionString);
 });
 
-builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+builder.Services.AddCarter();
+builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<Program>());
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -25,8 +31,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
-app.MapControllers();
+app.MapCarter();
 
 app.Run();

@@ -28,5 +28,5 @@ public partial class Trip
 
     [ForeignKey("IdTrip")]
     [InverseProperty("IdTrips")]
-    public virtual ICollection<Country> IdCountries { get; set; } = new List<Country>();
+    public virtual ICollection<Country> Countries { get; set; } = new List<Country>();
 }

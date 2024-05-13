@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Trips.API.Data.Models;
 
 namespace Trips.API.Data;
@@ -25,7 +23,9 @@ public partial class TripsDbContext : DbContext
     public virtual DbSet<Trip> Trips { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=AppSettings:SQLConnectionString");
+    {
+        
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -55,7 +55,7 @@ public partial class TripsDbContext : DbContext
 
             entity.Property(e => e.IdCountry).ValueGeneratedNever();
 
-            entity.HasMany(d => d.IdTrips).WithMany(p => p.IdCountries)
+            entity.HasMany(d => d.IdTrips).WithMany(p => p.Countries)
                 .UsingEntity<Dictionary<string, object>>(
                     "CountryTrip",
                     r => r.HasOne<Trip>().WithMany()
