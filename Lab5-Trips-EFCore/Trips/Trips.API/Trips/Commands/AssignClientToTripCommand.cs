@@ -21,7 +21,16 @@ public class AssignClientToTripHandler(TripsDbContext _context, IMapper _mapper)
         var client = await _context.Clients.SingleOrDefaultAsync(c => c.Pesel == request.dto.Pesel, cancellationToken);
         if (client is null)
         {
-            client = _mapper.Map<Client>(request.dto);
+            var clientIdMax = await _context.Clients.MaxAsync(c => c.IdClient, cancellationToken);
+            client = new Client
+            {
+                IdClient = clientIdMax + 1,
+                FirstName = request.dto.FirstName,
+                LastName = request.dto.LastName,
+                Pesel = request.dto.Pesel,
+                Email = request.dto.Email,
+                Telephone = request.dto.Telephone,
+            };
             _context.Clients.Add(client);
             await _context.SaveChangesAsync(cancellationToken);
         }
@@ -35,7 +44,8 @@ public class AssignClientToTripHandler(TripsDbContext _context, IMapper _mapper)
         {
             IdClient = client.IdClient,
             IdTrip = request.IdTrip,
-            RegisteredAt = DateTime.Now
+            RegisteredAt = DateTime.UtcNow,
+            PaymentDate = DateTime.TryParse(request.dto.PaymentDate, out var paymentDate) ? paymentDate : null
         };
         _context.ClientTrips.Add(clientTrip);
         await _context.SaveChangesAsync(cancellationToken);

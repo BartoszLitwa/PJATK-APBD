@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
-using Trips.API.Data.Models;
 
-namespace Trips.API.Data;
+namespace Trips.API.Data.Models;
 
 [Table("Client", Schema = "trip")]
 public partial class Client
@@ -28,6 +24,6 @@ public partial class Client
     [StringLength(120)]
     public string Pesel { get; set; } = null!;
 
-    [InverseProperty("IdClientNavigation")]
+    [InverseProperty("Client")]
     public virtual ICollection<ClientTrip> ClientTrips { get; set; } = new List<ClientTrip>();
 }

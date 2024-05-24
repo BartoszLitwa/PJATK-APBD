@@ -22,9 +22,9 @@ public partial class ClientTrip
 
     [ForeignKey("IdClient")]
     [InverseProperty("ClientTrips")]
-    public virtual Client IdClientNavigation { get; set; } = null!;
+    public virtual Client Client { get; set; } = null!;
 
     [ForeignKey("IdTrip")]
     [InverseProperty("ClientTrips")]
-    public virtual Trip IdTripNavigation { get; set; } = null!;
+    public virtual Trip Trip { get; set; } = null!;
 }

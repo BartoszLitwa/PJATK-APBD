@@ -10,7 +10,7 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<Trip, GetAllTripsResponse>()
             .ForMember(dest => dest.Countries, opt => opt.MapFrom(src => src.Countries.Select(ct => ct.Name)))
-            .ForMember(dest => dest.Clients, opt => opt.MapFrom(src => src.ClientTrips.Select(ct => ct.IdClientNavigation)));
+            .ForMember(dest => dest.Clients, opt => opt.MapFrom(src => src.ClientTrips.Select(ct => ct.Client)));
         CreateMap<Country, CountryResponse>();
         CreateMap<Client, ClientResponse>();
     }

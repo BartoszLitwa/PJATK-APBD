@@ -23,10 +23,10 @@ public partial class Trip
 
     public int MaxPeople { get; set; }
 
-    [InverseProperty("IdTripNavigation")]
+    [InverseProperty("Trip")]
     public virtual ICollection<ClientTrip> ClientTrips { get; set; } = new List<ClientTrip>();
 
     [ForeignKey("IdTrip")]
-    [InverseProperty("IdTrips")]
+    [InverseProperty("Trips")]
     public virtual ICollection<Country> Countries { get; set; } = new List<Country>();
 }

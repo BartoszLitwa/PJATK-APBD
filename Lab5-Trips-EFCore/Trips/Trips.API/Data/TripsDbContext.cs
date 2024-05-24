@@ -33,18 +33,18 @@ public partial class TripsDbContext : DbContext
         {
             entity.HasKey(e => e.IdClient).HasName("Client_pk");
 
-            entity.Property(e => e.IdClient).ValueGeneratedNever();
+            entity.Property(e => e.IdClient).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<ClientTrip>(entity =>
         {
             entity.HasKey(e => new { e.IdClient, e.IdTrip }).HasName("Client_Trip_pk");
 
-            entity.HasOne(d => d.IdClientNavigation).WithMany(p => p.ClientTrips)
+            entity.HasOne(d => d.Client).WithMany(p => p.ClientTrips)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Table_5_Client");
 
-            entity.HasOne(d => d.IdTripNavigation).WithMany(p => p.ClientTrips)
+            entity.HasOne(d => d.Trip).WithMany(p => p.ClientTrips)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Table_5_Trip");
         });
@@ -53,9 +53,9 @@ public partial class TripsDbContext : DbContext
         {
             entity.HasKey(e => e.IdCountry).HasName("Country_pk");
 
-            entity.Property(e => e.IdCountry).ValueGeneratedNever();
+            entity.Property(e => e.IdCountry).ValueGeneratedOnAdd();
 
-            entity.HasMany(d => d.IdTrips).WithMany(p => p.Countries)
+            entity.HasMany(d => d.Trips).WithMany(p => p.Countries)
                 .UsingEntity<Dictionary<string, object>>(
                     "CountryTrip",
                     r => r.HasOne<Trip>().WithMany()
@@ -77,7 +77,7 @@ public partial class TripsDbContext : DbContext
         {
             entity.HasKey(e => e.IdTrip).HasName("Trip_pk");
 
-            entity.Property(e => e.IdTrip).ValueGeneratedNever();
+            entity.Property(e => e.IdTrip).ValueGeneratedOnAdd();
         });
     }
 }

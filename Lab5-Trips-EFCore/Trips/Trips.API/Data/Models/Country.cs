@@ -13,6 +13,6 @@ public partial class Country
     public string Name { get; set; } = null!;
 
     [ForeignKey("IdCountry")]
-    [InverseProperty("IdCountries")]
-    public virtual ICollection<Trip> IdTrips { get; set; } = new List<Trip>();
+    [InverseProperty("Countries")]
+    public virtual ICollection<Trip> Trips { get; set; } = new List<Trip>();
 }
