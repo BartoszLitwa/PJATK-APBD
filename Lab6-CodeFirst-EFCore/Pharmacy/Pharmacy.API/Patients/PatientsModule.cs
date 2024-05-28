@@ -1,23 +1,21 @@
-using Azure.Core;
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Pharmacy.API.Prescriptions.Commands;
-using Pharmacy.API.Prescriptions.Models.Requests;
+using Pharmacy.API.Patients.Queries;
 
-namespace Pharmacy.API.Prescriptions;
+namespace Pharmacy.API.Patients;
 
-public class PrescriptionsModule() : CarterModule("/api/prescriptions")
+public class PatientsModule() : CarterModule("/api/patients")
 {
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("");
 
-        group.MapPost("", async ([FromBody] AddPrescriptionRequest Request, ISender sender) =>
+        group.MapGet("{IdPatient:int}", async ([FromRoute] int IdPatient, ISender sender) =>
         {
             try
             {
-                var response = await sender.Send(new AddPrescriptionCommand(Request));
+                var response = await sender.Send(new GetAllPatientInfoWithPrescriptionsAndMedicamentsQuery(IdPatient));
                 return Results.Ok(response);
             }
             catch (Exception e)

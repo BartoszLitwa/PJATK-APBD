@@ -3,9 +3,10 @@ namespace Pharmacy.API.Prescriptions.Models.Requests;
 public class AddPrescriptionRequest
 {
     public AddPrescriptionPatienRequest Patient { get; set; }
-    public IEnumerable<AddPrescriptionMedicamentsRequest> Medicaments { get; set; }
+    public int IdDoctor { get; set; }
     public DateTime Date { get; set; }
     public DateTime DueDate { get; set; }
+    public IEnumerable<AddPrescriptionMedicamentsRequest> Medicaments { get; set; }
 }
 
 public class AddPrescriptionPatienRequest

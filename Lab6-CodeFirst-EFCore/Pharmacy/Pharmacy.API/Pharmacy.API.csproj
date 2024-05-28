@@ -24,7 +24,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Patients\Models\" />
+      <Folder Include="Patients\Commands\" />
+      <Folder Include="Patients\Models\Requests\" />
       <Folder Include="Prescriptions\Queries\" />
     </ItemGroup>
 

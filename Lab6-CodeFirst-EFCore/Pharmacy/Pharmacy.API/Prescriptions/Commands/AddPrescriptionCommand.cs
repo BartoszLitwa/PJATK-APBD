@@ -25,9 +25,10 @@ public class AddPrescriptionHandler(PharmacyDbContext context) : IRequestHandler
                 Birthdate = request.Request.Patient.Birthdate
             };
             await context.Patients.AddAsync(patient, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
         
-        if(request.Request.DueDate >= request.Request.Date)
+        if(request.Request.DueDate < request.Request.Date)
             throw new Exception("Due date must be greater than date");
         
         var medicamentsIds = request.Request.Medicaments
@@ -36,11 +37,13 @@ public class AddPrescriptionHandler(PharmacyDbContext context) : IRequestHandler
 
         if (medicamentsIds.Count > 10)
             throw new Exception("Medicaments must be unique");
+
+        var medicametsExist = await context.Medicaments
+            .Select(m => m.IdMedicament)
+            .Where(m => medicamentsIds.Contains(m))
+            .ToListAsync(cancellationToken);
         
-        var allMedicamentsExist = await context.Medicaments
-            .AllAsync(m => medicamentsIds.Contains(m.IdMedicament), cancellationToken);
-        
-        if (!allMedicamentsExist)
+        if (medicametsExist.Count != medicamentsIds.Count)
             throw new Exception("All Medicaments must exist");
 
         var prescription = new Prescription
@@ -48,8 +51,10 @@ public class AddPrescriptionHandler(PharmacyDbContext context) : IRequestHandler
             Date = request.Request.Date,
             DueDate = request.Request.DueDate,
             IdPatient = request.Request.Patient.IdPatient,
+            IdDoctor = request.Request.IdDoctor
         };
         await context.Prescriptions.AddAsync(prescription, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
         
         var prescriptionMedicaments = request.Request.Medicaments
             .Select(m => new PrescriptionMedicament
