@@ -77,3 +77,5 @@ public class AddPrescriptionHandler(PharmacyDbContext context) : IRequestHandler
         };
     }
 }
+
+// Write me inserts for all the tables with fake data
