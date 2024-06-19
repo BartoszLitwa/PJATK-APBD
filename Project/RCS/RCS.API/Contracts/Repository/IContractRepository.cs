@@ -8,4 +8,10 @@ public interface IContractRepository
     Task<Contract> GetContractAsync(int contractId);
     Task UpdateContractAsync(Contract contract);
     Task AddPaymentAsync(Payment payment);
+    
+    Task<decimal> CalculateCurrentRevenueAsync(string? productName = null);
+    Task<decimal> CalculatePredictedRevenueAsync(string? productName = null);
+    Task<decimal> GetExchangeRateAsync(string currency);
+    
+    Task<Software> GetSoftwareAsync(int softwareId);
 }

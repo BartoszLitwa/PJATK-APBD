@@ -1,4 +1,6 @@
 using MediatR;
+using RCS.API.Contracts.Models.Requests;
+using RCS.API.Contracts.Models.Responses;
 using RCS.API.Contracts.Repository;
 using RCS.API.Data.Models;
 

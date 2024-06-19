@@ -1,5 +1,7 @@
 using MediatR;
 using RCS.API.Clients.Repository;
+using RCS.API.Contracts.Models.Requests;
+using RCS.API.Contracts.Models.Responses;
 using RCS.API.Contracts.Repository;
 using RCS.API.Data;
 using RCS.API.Data.Models;
@@ -16,7 +18,7 @@ public class CreateContractHandler(IClientRepository _clientRepository, IContrac
         var client = await _clientRepository.GetClientAsync(request.Request.ClientId);
         if (client == null) throw new Exception("Client not found");
 
-        var software = await _context.Software.FindAsync(request.Request.SoftwareId);
+        var software = await _contractRepository.GetSoftwareAsync(request.Request.SoftwareId);
         if (software == null) throw new Exception("Software not found");
 
         var discount = client.HasPreviousContract() ? 0.05m : 0m;

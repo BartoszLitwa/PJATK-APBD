@@ -30,4 +30,57 @@ public class ContractRepository(RcsDbContext context) : IContractRepository
         context.Payments.Add(payment);
         await context.SaveChangesAsync();
     }
+    
+    public async Task<decimal> CalculateCurrentRevenueAsync(string? productName = null)
+    {
+        var contractsQuery = context.Contracts.AsQueryable();
+
+        if (!string.IsNullOrEmpty(productName))
+        {
+            contractsQuery = contractsQuery.Where(c => c.Software.Name == productName);
+        }
+
+        var currentRevenue = await contractsQuery
+            .Where(c => c.IsSigned)
+            .SumAsync(c => c.Payments.Sum(p => p.Amount));
+
+        return currentRevenue;
+    }
+
+    public async Task<decimal> CalculatePredictedRevenueAsync(string? productName = null)
+    {
+        var contractsQuery = context.Contracts.AsQueryable();
+
+        if (!string.IsNullOrEmpty(productName))
+        {
+            contractsQuery = contractsQuery.Where(c => c.Software.Name == productName);
+        }
+
+        var currentRevenue = await contractsQuery
+            .Where(c => c.IsSigned)
+            .SumAsync(c => c.Price);
+
+        var pendingRevenue = await contractsQuery
+            .Where(c => !c.IsSigned)
+            .SumAsync(c => c.Price);
+
+        return currentRevenue + pendingRevenue;
+    }
+
+    public async Task<decimal> GetExchangeRateAsync(string currency)
+    {
+        // Assume we have a service that provides the exchange rate
+        // For example purposes, return a fixed rate
+        return currency switch
+        {
+            "USD" => 0.25m,
+            "EUR" => 0.22m,
+            _ => 1m // Default to PLN
+        };
+    }
+    
+    public async Task<Software> GetSoftwareAsync(int softwareId)
+    {
+        return await context.Software.FindAsync(softwareId);
+    }
 }
