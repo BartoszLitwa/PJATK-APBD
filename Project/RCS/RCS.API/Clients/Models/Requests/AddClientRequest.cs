@@ -1,0 +1,1 @@
+public record AddClientRequest(string FirstName, string LastName, string Address, string Email, string PhoneNumber, string PESEL);

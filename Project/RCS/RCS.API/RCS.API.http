@@ -1,0 +1,6 @@
+@RCS.API_HostAddress = http://localhost:5277
+
+GET {{RCS.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
